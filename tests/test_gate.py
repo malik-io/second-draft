@@ -41,6 +41,17 @@ class TestGateAdmission(unittest.TestCase):
             self.assertFalse(lesson.validation["checks"]["source_cited"])
             self.assertIn("Missing provenance", lesson.validation["failed_check"])
 
+    def test_revalidation_requires_source_provenance(self):
+        tmp, store = make_store()
+        with tmp:
+            gate = make_gate(store)
+            lesson = admit_valid_lesson(store, gate)
+            lesson.origin = ""
+            lesson.origin_source = ""
+            result = gate.revalidate(lesson, fixtures.acceptance_worlds_weekday())
+            self.assertFalse(result["passed"])
+            self.assertFalse(result["checks"]["source_cited"])
+
     def test_proposer_requires_two_trajectories(self):
         tmp, store = make_store()
         with tmp:
