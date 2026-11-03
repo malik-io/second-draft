@@ -247,7 +247,8 @@ class Gate:
                     "checks": checks}
         acceptance = self.acceptance_runner(lesson, acceptance_worlds)
         passed = (
-            not checks["contradicted"]
+            checks["source_cited"]
+            and not checks["contradicted"]
             and checks["corroborated"]
             and assessment.verdict == "supports"
             and acceptance["passed"]
