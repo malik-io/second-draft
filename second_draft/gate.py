@@ -176,10 +176,11 @@ class Gate:
 
         # Insufficient evidence: refused, but NOT recorded as false
         # (hostile fixture H2: unverified is not the same as wrong).
-        if not checks["corroborated"] or assessment.verdict == "insufficient":
+        if not checks["source_cited"] or not checks["corroborated"] or assessment.verdict == "insufficient":
             validation["decision"] = "quarantined"
             validation["failed_check"] = (
-                "Insufficient evidence: no independent corroborating record. "
+                ("Missing provenance: source citation is required. " if not checks["source_cited"] else "")
+                + "Insufficient evidence: no independent corroborating record. "
                 "Held unverified -- explicitly NOT recorded as false."
             )
             lesson.validation = validation
