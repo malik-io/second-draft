@@ -123,3 +123,35 @@ Ran 15 tests in 0.026s
 
 OK
 ```
+
+## 4. Nov 3, 2026 — 21-test run against the published snapshot (separate from the Oct 22 run above)
+
+This section does NOT edit the Oct 22 transcript above. That run was 15 tests, no live API key, no Meta adapter tests. This run is different, and is recorded separately.
+
+- Published code checked: GitHub snapshot commit 41f0084cf7c50347cd9a05a6f57bc5ba8244fd68 on main, https://github.com/malik-io/second-draft (plus provider Initial commit f0658e02f0ebf7d556f6a37280b2af6dbe6f7dd5).
+- Local test files run here are identical in content to the test files in that snapshot (no test file was changed between the snapshot push and this run; the only local changes since then are README.md and the new showcase index.html, neither of which affects tests).
+- Runtime: Python 3.12.3, stdlib only, no live API key used for this suite — Meta adapter tests use fake transports, as before.
+- Command: `python -m unittest discover -s tests -t . -v`
+- Result: Ran 21 tests, OK (0.042s). All 21 test names, each `ok`:
+  - tests.test_abc.TestABC.test_abc_outcomes
+  - tests.test_gate.TestGateAdmission.test_gate_admits_valid_candidate
+  - tests.test_gate.TestGateAdmission.test_proposer_requires_two_trajectories
+  - tests.test_gate.TestHostileFixtures.test_bounded_retry_recovers_from_transient_auditor_failure
+  - tests.test_gate.TestHostileFixtures.test_h1_plausible_but_wrong_is_quarantined
+  - tests.test_gate.TestHostileFixtures.test_h2_insufficient_evidence_refused_but_not_recorded_false
+  - tests.test_gate.TestHostileFixtures.test_h3_failing_auditor_fails_closed
+  - tests.test_gate.TestHostileFixtures.test_h3_timeout_auditor_fails_closed
+  - tests.test_meta_adapters.TestMetaAuditor.test_parses_verdict_and_discloses_no_family_separation
+  - tests.test_meta_adapters.TestMetaAuditor.test_unparseable_verdict_raises_and_gate_fails_closed
+  - tests.test_meta_adapters.TestMetaClient.test_missing_key_raises_without_calling
+  - tests.test_meta_adapters.TestMetaClient.test_unparseable_response_raises
+  - tests.test_meta_adapters.TestMetaProposer.test_drops_lesson_without_recurrence
+  - tests.test_meta_adapters.TestMetaProposer.test_proposes_calendar_lesson_from_recurring_tag
+  - tests.test_retrieval.TestRetrievalExclusion.test_candidate_and_challenged_lessons_excluded
+  - tests.test_retrieval.TestRetrievalExclusion.test_quarantined_lesson_is_never_retrieved
+  - tests.test_retrieval.TestRetrievalExclusion.test_suspended_lesson_excluded_immediately
+  - tests.test_rollback.TestRollback.test_illegal_transitions_rejected
+  - tests.test_rollback.TestRollback.test_restore_requires_passing_revalidation
+  - tests.test_rollback.TestRollback.test_superseded_record_survives_and_rollback_restores_it
+  - tests.test_rollback.TestRollback.test_suspension_writes_reversal_record
+- Note: the 6 Meta adapter tests above are the new module in the snapshot; they were not in the Oct 22 15-test run. Do not conflate the two runs.

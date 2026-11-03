@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Second Draft — An Agent That Learns From Its Own Verified Work</title>
+  <style>
+    :root {
+      --background: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --accent: #2563eb;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+    }
+    header {
+      margin-bottom: 2.5rem;
+    }
+    .meta-badge {
+      display: inline-block;
+      background-color: #2563eb;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem 0;
+      line-height: 1.2;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin: 0 0 1.5rem 0;
+    }
+    .links-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.625rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+    .btn-secondary {
+      background-color: white;
+      color: var(--text);
+      border: 1px solid #e5e7eb;
+    }
+    section {
+      margin: 2.5rem 0;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin: 0 0 1rem 0;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.05rem;
+    }
+    .card p {
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    .step {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .arrow {
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .timeline-item {
+      background: white;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: 0 12px 12px 0;
+    }
+    .timeline-item h3 {
+      margin: 0 0 0.5rem 0;
+    }
+    .timeline-item p {
+      margin: 0;
+      color: var(--text-muted);
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+    .tag-learn {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .tag-correct {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .tag-quarantine {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .tag-rollback {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background: #f8fafc;
+    }
+    .result-good {
+      color: #166534;
+      font-weight: 700;
+    }
+    .result-bad {
+      color: #991b1b;
+      font-weight: 700;
+    }
+    .disclosure {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .disclosure h2 {
+      margin-top: 0;
+    }
+    .disclosure ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      line-height: 1.7;
+    }
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="meta-badge">Indie Developer Track · Build for Your World · Meta Global AI Developer Hackathon</div>
+      <h1>Second Draft</h1>
+      <p class="subtitle">An agent that learns from its own verified work.</p>
+      <div class="links-row">
+        <a class="btn btn-primary" href="https://github.com/malik-io/second-draft">View Repository</a>
+        <span class="btn btn-secondary">Video: TBD — placeholder, no URL yet</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>How It Works</h2>
+      <p>A proposer suggests a lesson. An auditor checks it against held-out evidence in a separate context and rubric. A deterministic gate then admits, quarantines, or rolls back the lesson.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Proposer</h3>
+          <p>Suggests a lesson from the agent's work.</p>
+        </div>
+        <div class="card">
+          <h3>Auditor</h3>
+          <p>Checks the proposed lesson against held-out evidence in a separate context and rubric.</p>
+        </div>
+        <div class="card">
+          <h3>Deterministic Gate</h3>
+          <p>Admits, quarantines, or rolls back the lesson based on the audit and evidence.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="step">Proposed Lesson</span>
+        <span class="arrow">→</span>
+        <span class="step">Auditor Veto</span>
+        <span class="arrow">→</span>
+        <span class="step">Evidence Gate</span>
+        <span class="arrow">→</span>
+        <span class="step">Rollback/Commit</span>
+      </div>
+      <p>The gate is deterministic: a lesson is committed only after it passes the auditor and evidence checks; otherwise it is quarantined or rolled back.</p>
+    </section>
+
+    <section>
+      <h2>The Verified Morning Demo</h2>
+      <div class="timeline-item">
+        <span class="tag tag-learn">Learn</span>
+        <h3>Beat 1: Learn</h3>
+        <p>The agent learns a morning routine. The lesson was committed after it passed the auditor and evidence checks.</p>
+      </div>
+      <div class="timeline-item">
+        <span class="tag tag-correct">Correct</span>
+        <h3>Beat 2: Correct</h3>
+        <p>A corrected lesson replaced an earlier one after it passed the auditor and evidence checks. The new lesson was committed.</p>
+      </div>
+      <div class="timeline-item">
+        <span class="tag tag-quarantine">Quarantine</span>
+        <span class="tag tag-rollback">Rollback</span>
+        <h3>Beat 3: Regression &amp; Rollback</h3>
+        <p>A highly plausible, high-confidence lesson about the weekend was applied, then checked against the calendar. It failed the check, was quarantined, and the previous lesson was restored with a reversal record.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Frozen Fixture Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Evaluation Condition</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gated</td>
+            <td class="result-good">4/4</td>
+          </tr>
+          <tr>
+            <td>No-lesson baseline</td>
+            <td>2/4</td>
+          </tr>
+          <tr>
+            <td>Ungated</td>
+            <td class="result-bad">1/4 with harm</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>21 tests passing.</p>
+    </section>
+
+    <section class="disclosure">
+      <h2>What this demonstration proves, and what it doesn't</h2>
+      <ul>
+        <li><strong>Proves, on the stated fixtures:</strong> a lesson can be admitted only after it passes an evidence gate, a wrong lesson can be quarantined, and a regressing lesson can be suspended and rolled back with a reversal record.</li>
+        <li><strong>Does not prove:</strong> general safety, general learning, novel-failure detection, production readiness, or independent model-family validation.</li>
+        <li>The default local proposer is rule-based (DeterministicProposer), not open-ended autonomous lesson discovery.</li>
+        <li>The local fixture auditor is not a model (LocalFixtureAuditor) — it is a deterministic fixture check. Meta proposer/auditor adapters and any live API evidence are distinct from the captured fixture transcript.</li>
+        <li>The system stores and applies versioned lessons; it does not retrain or modify model weights.</li>
+      </ul>
+    </section>
+
+    <section class="disclosure">
+      <h2>Disclosures</h2>
+      <ul>
+        <li>All data shown are synthetic and entrant-authored.</li>
+        <li>Results are limited to the stated frozen fixtures and do not establish generalization.</li>
+        <li>Meta Model API integration is wired in code: proposer muse-spark-1.3, auditor muse-spark-1.1. A live call has been completed, but a labeled live transcript is not yet claimed, so no live transcript is presented here.</li>
+        <li>Auditor separation is by version, context, and rubric — NOT by model family. Both proposer and auditor are Muse Spark.</li>
+        <li>Production readiness is NOT claimed.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>Second Draft — a single-file, zero-dependency showcase. No external resources are loaded.</p>
+    </footer>
+  </div>
+</body>
+</html>
