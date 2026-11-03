@@ -28,6 +28,19 @@ class TestGateAdmission(unittest.TestCase):
             # Admission is scoped (spec 2.3).
             self.assertIn("acc-w1", lesson.scope)
 
+    def test_missing_source_provenance_is_not_admitted(self):
+        tmp, store = make_store()
+        with tmp:
+            gate = make_gate(store)
+            lesson = propose_valid_lesson(store)
+            lesson.origin = ""
+            lesson.origin_source = ""
+            decision = gate.evaluate(lesson, fixtures.acceptance_worlds_weekday())
+            self.assertEqual(decision["decision"], "quarantined")
+            self.assertIs(lesson.state, State.QUARANTINED)
+            self.assertFalse(lesson.validation["checks"]["source_cited"])
+            self.assertIn("Missing provenance", lesson.validation["failed_check"])
+
     def test_proposer_requires_two_trajectories(self):
         tmp, store = make_store()
         with tmp:
