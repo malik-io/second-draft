@@ -44,7 +44,7 @@ python -m unittest discover -s tests -t .
 
 ## Continuous verification
 
-GitHub Actions runs the full unittest suite, the frozen-fixture A/B/C experiment, and the deterministic demo on every push to `main` and pull request. The latest verified run (Nov 3, 2026) passed all three steps: **22 tests**, A/B/C, and the deterministic demo. [View the run](https://github.com/malik-io/second-draft/actions/runs/41686553743).
+GitHub Actions runs the full unittest suite, the frozen-fixture A/B/C experiment, and the deterministic demo on every push to `main` and pull request. The latest verified run (Nov 3, 2026) passed all three steps: **23 tests**, A/B/C, and the deterministic demo. [View the run](https://github.com/malik-io/second-draft/actions/runs/41686553743).
 
 A full captured run is in [`RUN-TRANSCRIPT.md`](RUN-TRANSCRIPT.md).
 
